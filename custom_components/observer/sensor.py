@@ -44,7 +44,7 @@ async def async_setup_platform(
 
     _LOGGER.error(config)
 
-    sensor = PrinterSensor(config[CONF_IP_ADDRESS], config[CONF_PORT])
+    sensor = PrinterSensor(config[CONF_IP_ADDRESS], config[CONF_PORT], 'ErsterTest')
     async_add_entities([sensor], update_before_add=True)
     
  
