@@ -1,5 +1,5 @@
 """Test component setup."""
-from homeassistant.setup import async_setup_component
+from pytest_homeassistant.setup import async_setup_component
 
 from custom_components.trex_observer.const import DOMAIN
 

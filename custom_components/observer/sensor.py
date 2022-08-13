@@ -58,6 +58,7 @@ class PrinterSensor(Entity):
         self.addr = {'ip': ip, 'port':port}
         self.attrs: Dict[str, Any] = {}
         self._name = name
+        self._available = True
 
         for key in TEMPS_LONG + STATUS + INFOS + AXIS + PROGRESS +['X_status']:
             self.attrs[key] = UNAVAILABLE
@@ -66,7 +67,6 @@ class PrinterSensor(Entity):
     def state(self) -> Optional[str]:
         return self.attrs[STATUS[0]]
 
-
     @property
     def device_state_attributes(self) -> Dict[str, Any]:
         return self.attrs
@@ -74,6 +74,16 @@ class PrinterSensor(Entity):
     @property
     def name(self):
         return '3D_print_' + self._name
+
+    @property
+    def available(self):
+        return self._available
+
+    @property
+    def  unique_id(self) -> str:
+        return self.attr[INFOS[3]]
+
+
 
 
     async def async_update(self):
