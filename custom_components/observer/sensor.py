@@ -27,7 +27,7 @@ SCAN_INTERVAL = timedelta(minutes=5)
 DEFAULT_PORT = 8899
 DEFAULT_IP = '192.168.178.98'
 
-PLATFOTM_SCHEMA = PLATFORM_SCHEMA.extend(
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
                         {
                             vol.Optional(CONF_IP_ADDRESS, default=DEFAULT_IP): cv.string,
                             vol.Optional(CONF_PORT, default=DEFAULT_PORT): cv.port,
@@ -41,19 +41,23 @@ async def async_setup_platform(
     discovery_info: Optional[DiscoveryInfoType] = None,
 ) -> None:
     """Set up the sensor platform."""
+
+    _LOGGER.error(config)
+
     sensor = PrinterSensor(config[CONF_IP_ADDRESS], config[CONF_PORT])
-    async_add_entities(sensor, update_before_add=True)
+    async_add_entities([sensor], update_before_add=True)
     
  
 
 
 
 class PrinterSensor(Entity):
-    def __init__(self, ip, port):
+    def __init__(self, ip, port, name):
         super().__init__()
 
         self.addr = {'ip': ip, 'port':port}
         self.attrs: Dict[str, Any] = {}
+        self._name = name
 
         for key in TEMPS_LONG + STATUS + INFOS + AXIS + PROGRESS +['X_status']:
             self.attrs[key] = UNAVAILABLE
@@ -66,6 +70,10 @@ class PrinterSensor(Entity):
     @property
     def device_state_attributes(self) -> Dict[str, Any]:
         return self.attrs
+
+    @property
+    def name(self):
+        return '3D_print_' + self._name
 
 
     async def async_update(self):
