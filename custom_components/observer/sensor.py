@@ -44,8 +44,13 @@ async def async_setup_platform(
 
     _LOGGER.error(config)
 
-    sensor = PrinterSensor(config[CONF_IP_ADDRESS], config[CONF_PORT], 'ErsterTest')
-    async_add_entities([sensor], update_before_add=True)
+    total_list = TEMPS_LONG + STATUS + INFOS + AXIS + PROGRESS +['X_status']
+    ip = config[CONF_IP_ADDRESS]
+    port =  config[CONF_PORT]
+
+    sensors = [ PrinterSensor(ip, port, key) for key in total_list ]
+
+    async_add_entities(sensors, update_before_add=True)
     
  
 
@@ -65,11 +70,12 @@ class PrinterSensor(Entity):
 
     @property
     def state(self) -> Optional[str]:
-        return self.attrs[STATUS[0]]
+        return self.attrs[self._name]
 
     @property
     def device_state_attributes(self) -> Dict[str, Any]:
         return self.attrs
+
 
     @property
     def name(self):
@@ -81,7 +87,7 @@ class PrinterSensor(Entity):
 
     @property
     def  unique_id(self) -> str:
-        return self.attr[INFOS[3]]
+        return self.attrs[INFOS[3]]
 
 
 
