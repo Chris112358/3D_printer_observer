@@ -1,0 +1,11 @@
+{
+  "codeowners": ["@Chris112358"],
+  "config_flow": false,
+  "dependencies": [],
+  "documentation": "https://github.com/Chris112358/3D_printer_observer",
+  "domain": "observer",
+  "iot_class": "cloud_polling",
+  "name": "Observer",
+  "requirements": [],
+  "version": "1.0.0"
+}
