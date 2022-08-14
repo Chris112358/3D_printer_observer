@@ -1,10 +1,17 @@
 import logging
 
-from .encodedata import get_head, get_info, get_progress, get_status, get_temp
+try:
+    from .encodedata import get_head, get_info, get_progress, get_status, get_temp
 
-from .const import MAX_RETRYS
-from .const import TEMPS_LONG, INFOS, STATUS, AXIS, PROGRESS
-from .const import UNAVAILABLE
+    from .const import MAX_RETRYS
+    from .const import TEMPS_LONG, INFOS, STATUS, AXIS, PROGRESS
+    from .const import UNAVAILABLE
+except ImportError:
+    from encodedata import get_head, get_info, get_progress, get_status, get_temp
+
+    from const import MAX_RETRYS
+    from const import TEMPS_LONG, INFOS, STATUS, AXIS, PROGRESS
+    from const import UNAVAILABLE
 
 
 _Logger = logging.getLogger(__name__)

@@ -1,7 +1,15 @@
 import socket
+import logging
 
-from .const import BUFFER, TIMEOUT
-from .const import REQUEST_CONTROLL
+try:
+	from .const import BUFFER, TIMEOUT
+	from .const import REQUEST_CONTROLL
+except ImportError:
+	from const import BUFFER, TIMEOUT
+	from const import REQUEST_CONTROLL
+
+
+_LOGGER = logging.getLogger(__name__)
 
 
 def send_and_get(addr, msg):
@@ -9,12 +17,18 @@ def send_and_get(addr, msg):
 
 	printer = socket.socket()
 	printer.settimeout(TIMEOUT)
-	printer.connect((addr['ip'], addr['port']))
-	printer.send(msg.encode())
-	data = printer.recv(BUFFER)
-	printer.close()
+	try:
+		printer.connect((addr['ip'], addr['port']))
+		printer.send(msg.encode())
+		data = printer.recv(BUFFER)
+		printer.close()
 
-	return data.decode()
+		return data.decode()
+	except TimeoutError:
+		return None
+	except Exception as inst:
+		_LOGGER.exception('Something went wrong while connecting to Printer')
+		return None
 
 
 def recieve(addr, msg):

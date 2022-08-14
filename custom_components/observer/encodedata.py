@@ -1,15 +1,24 @@
 import re
 import logging
 
+try:
+    from .patterns import re_field, re_pos, re_pro, re_temp, re_temp_target
 
-from .patterns import re_field, re_pos, re_pro, re_temp, re_temp_target
+    from .call_handler import recieve
 
-from .call_handler import recieve
+    from .const import TEMPS, INFOS, STATUS, AXIS, PROGRESS
+    from .const import REQUEST_INFO, REQUEST_POSITION, REQUEST_PROGRESS, REQUEST_STATUS, REQUEST_TEMPERATURE
+    from .const import CHANGE_TEMPERATURE
+    from .const import UNAVAILABLE
+except ImportError:
+    from patterns import re_field, re_pos, re_pro, re_temp, re_temp_target
 
-from .const import TEMPS, INFOS, STATUS, AXIS, PROGRESS
-from .const import REQUEST_INFO, REQUEST_POSITION, REQUEST_PROGRESS, REQUEST_STATUS, REQUEST_TEMPERATURE
-from .const import CHANGE_TEMPERATURE
-from .const import UNAVAILABLE
+    from call_handler import recieve
+
+    from const import TEMPS, INFOS, STATUS, AXIS, PROGRESS
+    from const import REQUEST_INFO, REQUEST_POSITION, REQUEST_PROGRESS, REQUEST_STATUS, REQUEST_TEMPERATURE
+    from const import CHANGE_TEMPERATURE
+    from const import UNAVAILABLE
 
 
 _LOGGER = logging.getLogger(__name__)
@@ -82,15 +91,21 @@ def get_progress(addr):
     data = recieve(addr, REQUEST_PROGRESS)
     re_string = re_pro()
 
-    re_groups = re.search(re_string, data).groups()
-    finished = re_groups[0]
-    total = re_groups[1]
+    try:
+        re_groups = re.search(re_string, data).groups()
+        finished = re_groups[0]
+        total = re_groups[1]
 
-    percentage = 0 if total == '0' else int((int(finished) / int(total)) * 10000) / 100
+        percentage = 0 if total == '0' else int((int(finished) / int(total)) * 10000) / 100
 
-    return {PROGRESS[0]: int(finished),
-            PROGRESS[1]: int(total),
-            PROGRESS[2]: percentage}
+        return {PROGRESS[0]: int(finished),
+                PROGRESS[1]: int(total),
+                PROGRESS[2]: percentage}
+
+    except:
+        return {PROGRESS[0]: UNAVAILABLE,
+                PROGRESS[1]: UNAVAILABLE,
+                PROGRESS[2]: UNAVAILABLE}
 
 
 def get_status(addr):

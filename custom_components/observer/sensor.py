@@ -42,8 +42,6 @@ async def async_setup_platform(
 ) -> None:
     """Set up the sensor platform."""
 
-    _LOGGER.error(config)
-
     total_list = TEMPS_LONG + STATUS + INFOS + AXIS + PROGRESS +['X_status']
     ip = config[CONF_IP_ADDRESS]
     port =  config[CONF_PORT]
@@ -86,8 +84,8 @@ class PrinterSensor(Entity):
         return self._available
 
     @property
-    def  unique_id(self) -> str:
-        return self.attrs[INFOS[3]]
+    def unique_id(self) -> str:
+        return self.attrs[INFOS[3]] + self._name
 
 
 
