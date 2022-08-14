@@ -23,9 +23,11 @@ from homeassistant.helpers.typing import (
 
 _LOGGER = logging.getLogger(__name__)
 
-SCAN_INTERVAL = timedelta(minutes=5)
+#SCAN_INTERVAL = timedelta(minutes=5)
 DEFAULT_PORT = 8899
 DEFAULT_IP = '192.168.178.98'
+TOTAL_KEYS = TEMPS_LONG + STATUS + INFOS + AXIS + PROGRESS +['X_status']
+
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
                         {
@@ -42,11 +44,10 @@ async def async_setup_platform(
 ) -> None:
     """Set up the sensor platform."""
 
-    total_list = TEMPS_LONG + STATUS + INFOS + AXIS + PROGRESS +['X_status']
     ip = config[CONF_IP_ADDRESS]
     port =  config[CONF_PORT]
 
-    sensors = [ PrinterSensor(ip, port, key) for key in total_list ]
+    sensors = [ PrinterSensor(ip, port, key) for key in TOTAL_KEYS ]
 
     async_add_entities(sensors, update_before_add=True)
     
@@ -63,7 +64,7 @@ class PrinterSensor(Entity):
         self._name = name
         self._available = True
 
-        for key in TEMPS_LONG + STATUS + INFOS + AXIS + PROGRESS +['X_status']:
+        for key in TOTAL_KEYS:
             self.attrs[key] = UNAVAILABLE
 
     @property
@@ -72,6 +73,11 @@ class PrinterSensor(Entity):
 
     @property
     def device_state_attributes(self) -> Dict[str, Any]:
+        _LOGGER.debug(self.attrs)
+        return self.attrs
+
+    @property
+    def extra_state_attributes(self) -> Dict[str, Any]:
         return self.attrs
 
 
@@ -88,12 +94,11 @@ class PrinterSensor(Entity):
         return self.attrs[INFOS[3]] + self._name
 
 
-
-
     async def async_update(self):
         try:
             data = get_data(self.addr)
             self.attrs = data
+            _LOGGER.debug('Updated data for printer')
         except Exception:
             _LOGGER.exception('Error during updating data for printer')
 
