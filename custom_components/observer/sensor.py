@@ -26,6 +26,7 @@ _LOGGER = logging.getLogger(__name__)
 #SCAN_INTERVAL = timedelta(minutes=5)
 DEFAULT_PORT = 8899
 DEFAULT_IP = '192.168.178.98'
+INFOS.pop(INFOS.index('X'))
 TOTAL_KEYS = TEMPS_LONG + STATUS + INFOS + AXIS + PROGRESS +['X_status']
 
 
@@ -71,6 +72,7 @@ class PrinterSensor(Entity):
     def state(self) -> Optional[str]:
         return self.attrs[self._name]
 
+    '''
     @property
     def device_state_attributes(self) -> Dict[str, Any]:
         _LOGGER.debug(self.attrs)
@@ -79,7 +81,7 @@ class PrinterSensor(Entity):
     @property
     def extra_state_attributes(self) -> Dict[str, Any]:
         return self.attrs
-
+    '''
 
     @property
     def name(self):
