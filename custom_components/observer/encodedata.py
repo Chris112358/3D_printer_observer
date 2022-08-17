@@ -23,10 +23,10 @@ except ImportError:
 
 _LOGGER = logging.getLogger(__name__)
 
-def get_info(addr):
+async def get_info(addr):
     '''returns basic printer information'''
 
-    data = recieve(addr, REQUEST_INFO)
+    data = await recieve(addr, REQUEST_INFO)
     printer_info = {}
     
     for field in INFOS:
@@ -40,10 +40,10 @@ def get_info(addr):
     return printer_info
 
 
-def get_head(addr):
+async def get_head(addr):
     '''returns the position of the printer head'''
 
-    data = recieve(addr, REQUEST_POSITION)
+    data = await recieve(addr, REQUEST_POSITION)
     head_pos = {}
     
     for field in AXIS:
@@ -57,10 +57,10 @@ def get_head(addr):
     return head_pos
 
 
-def get_temp(addr):
+async def get_temp(addr):
     ''' returns the actual temps and goal temps'''
 
-    data = recieve(addr, REQUEST_TEMPERATURE)
+    data = await recieve(addr, REQUEST_TEMPERATURE)
     actual = {}
     target = {}
 
@@ -85,10 +85,10 @@ def get_temp(addr):
     return temps
 
 
-def get_progress(addr):
+async def get_progress(addr):
     '''returns the progress of current print'''
 
-    data = recieve(addr, REQUEST_PROGRESS)
+    data = await recieve(addr, REQUEST_PROGRESS)
     re_string = re_pro()
 
     try:
@@ -108,10 +108,10 @@ def get_progress(addr):
                 PROGRESS[2]: UNAVAILABLE}
 
 
-def get_status(addr):
+async def get_status(addr):
     '''returns the current status of printer'''
 
-    data = recieve(addr, REQUEST_STATUS)
+    data = await recieve(addr, REQUEST_STATUS)
     infos = {}
 
     for field in STATUS:

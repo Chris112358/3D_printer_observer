@@ -1,11 +1,13 @@
 import logging
 from datetime import timedelta
+import asyncio
 
 from typing import Any, Callable, Dict, Optional
 
 from .recieve_data import get_data
 from .const import TEMPS_LONG, INFOS, STATUS, AXIS, PROGRESS
 from .const import UNAVAILABLE
+from .const import MAX_RETRYS, TIMEOUT
 
 import voluptuous as vol
 
@@ -71,8 +73,8 @@ class PrinterSensor(Entity):
     @property
     def state(self) -> Optional[str]:
         return self.attrs[self._name]
-
     '''
+
     @property
     def device_state_attributes(self) -> Dict[str, Any]:
         _LOGGER.debug(self.attrs)
@@ -98,9 +100,19 @@ class PrinterSensor(Entity):
 
     async def async_update(self):
         try:
-            data = get_data(self.addr)
+            data = await asyncio.wait_for(get_data(self.addr), timeout=( 2 * MAX_RETRYS * TIMEOUT ))
             self.attrs = data
             _LOGGER.debug('Updated data for printer')
         except Exception:
             _LOGGER.exception('Error during updating data for printer')
+            
+
+
+if __name__ == '__main__':
+
+    addr = {'ip': '192.168.178.198',
+		    'port': 8899}
+
+    data = asyncio.run(get_data(addr))
+    print(data)
 

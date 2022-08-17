@@ -2,7 +2,7 @@ DOMAIN = "observer"
 
 UNAVAILABLE = 'unavailable'
 
-MAX_RETRYS = 5
+MAX_RETRYS = 1
 
 #  Request calls
 REQUEST_CONTROLL = '~M601 S1\r\n'
@@ -17,7 +17,7 @@ CHANGE_TEMPERATURE = '~M104 S{} T0\r\n'
 
 # Constants for Socket call
 BUFFER = 1024
-TIMEOUT = 5
+TIMEOUT = 2
 
 # REGEX Fields
 TEMPS = ['T0', 'T1', 'B']
